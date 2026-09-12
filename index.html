@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hemanth Majji | Senior UX/UI Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ============ TOKENS ============ */
+:root{
+  --paper:#FFFFFF;
+  --paper-2:#F7F7F4;
+  --ink:#14181A;
+  --ink-soft:#5B6460;
+  --ink-faint:#96A099;
+  --deep:#0F1613;
+  --deep-2:#1B2822;
+  --deep-line: rgba(255,255,255,0.14);
+  --deep-ink:#F3F2EC;
+  --deep-ink-soft:#9BA79E;
+  --signal:#E0A23C;
+  --signal-ink:#5B3E10;
+  --trace:#4FB6A0;
+  --line: rgba(20,24,26,0.11);
+  --line-soft: rgba(20,24,26,0.07);
+  --card:#F5F4F0;
+  --radius-s:10px;
+  --radius-m:18px;
+  --radius-l:28px;
+  --maxw:1360px;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --shadow-lift: 0 30px 60px -30px rgba(16,20,17,0.22);
+
+  --rpm:#1F86C9;
+  --ptm:#123B5E;
+  --nr:#0E7C86;
+  --chara:#6FA98C;
+  --orbito:#B24B36;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+h1,h2,h3,h4{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-0.02em;}
+p{margin:0;}
+ul{margin:0;padding:0;list-style:none;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 40px;}
+@media (max-width:900px){.wrap{padding:0 22px;}}
+
+::selection{background:var(--signal);color:var(--signal-ink);}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible{
+  outline:2px solid var(--signal);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ============ GRAIN (fixed, cheap) ============ */
+.grain{
+  position:fixed;inset:0;z-index:60;pointer-events:none;
+  opacity:0.035;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============ SCROLL PROGRESS ============ */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:100%;
+  background:var(--line-soft);z-index:80;
+}
+.progress__bar{
+  height:100%;width:0%;background:var(--signal);
+  transform-origin:left;
+}
+
+/* ============ NAV ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:70;
+  padding:20px 0;
+  transition:background 0.4s var(--ease), border-color 0.4s var(--ease), backdrop-filter 0.4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.nav.is-scrolled{
+  background:rgba(255,255,255,0.78);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-bottom:1px solid var(--line);
+}
+body.is-project .nav.is-scrolled{
+  background:rgba(255,255,255,0.9);
+}
+.nav__row{display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand__mark{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.02em;
+  flex-shrink:0;
+}
+.brand__name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;}
+.brand__role{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:0.01em;margin-top:1px;}
+.nav__links{display:flex;align-items:center;gap:30px;}
+.nav__link{font-size:14.5px;color:var(--ink-soft);transition:color 0.25s var(--ease);position:relative;}
+.nav__link:hover{color:var(--ink);}
+.nav__cta{
+  font-size:13.5px;font-weight:500;
+  padding:10px 18px;border-radius:100px;
+  background:var(--ink);color:var(--paper);
+  transition:transform 0.15s var(--ease), background 0.25s var(--ease);
+  display:inline-flex;align-items:center;gap:8px;
+  white-space:nowrap;flex-shrink:0;
+}
+.nav__cta:hover{background:var(--signal-ink);}
+.nav__cta:active{transform:scale(0.96);}
+.nav__cta svg{width:15px;height:15px;flex-shrink:0;}
+.nav__toggle{
+  display:none;width:38px;height:38px;border-radius:50%;
+  align-items:center;justify-content:center;flex-shrink:0;
+  border:1px solid var(--line);background:var(--paper);
+  transition:background 0.2s var(--ease);
+}
+.nav__toggle svg{width:17px;height:17px;}
+.nav__toggle:hover{background:var(--paper-2);}
+@media (max-width:820px){
+  .nav__toggle{display:flex;}
+  .nav__links{
+    position:fixed;top:78px;left:16px;right:16px;z-index:69;
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);
+    box-shadow:var(--shadow-lift);padding:10px;
+    opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.98);
+    transition:opacity 0.22s var(--ease), transform 0.22s var(--ease), visibility 0.22s;
+  }
+  .nav__links.is-open{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
+  .nav__link{padding:13px 14px;border-radius:10px;}
+  .nav__link:hover{background:var(--paper-2);color:var(--ink);}
+  .nav__cta{justify-content:center;margin-top:6px;}
+}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 24px;border-radius:100px;
+  font-size:14.5px;font-weight:500;
+  white-space:nowrap;
+  transition:transform 0.12s var(--ease), background 0.25s var(--ease), color 0.25s var(--ease), border-color .25s var(--ease);
+}
+.btn:active{transform:scale(0.96);}
+.btn--primary{background:var(--ink);color:var(--paper);}
+.btn--primary:hover{background:var(--signal-ink);}
+.btn--ghost{border:1px solid var(--line);color:var(--ink);}
+.btn--ghost:hover{border-color:var(--ink);}
+.btn--on-dark{background:var(--signal);color:var(--signal-ink);}
+.btn--on-dark:hover{background:var(--deep-ink);}
+.btn--ghost-dark{border:1px solid var(--deep-line);color:var(--deep-ink);}
+.btn--ghost-dark:hover{border-color:var(--deep-ink);}
+.btn svg{width:16px;height:16px;flex-shrink:0;}
+
+/* ============ HERO ============ */
+.hero{
+  padding-top:150px;
+  padding-bottom:70px;
+  position:relative;
+  overflow:hidden;
+}
+.hero__grid{
+  display:grid;
+  grid-template-columns:1.05fr 0.95fr;
+  gap:20px;
+  align-items:center;
+}
+@media (max-width:900px){
+  .hero{padding-top:120px;padding-bottom:40px;}
+  .hero__grid{grid-template-columns:1fr;gap:40px;}
+}
+.hero__intro{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.hero__intro .dot{width:6px;height:6px;border-radius:50%;background:var(--trace);}
+.hero h1{
+  font-size:clamp(2.5rem, 5.4vw, 4.6rem);
+  line-height:1.02;
+  letter-spacing:-0.03em;
+  max-width:11ch;
+}
+.hero h1 em{
+  font-style:normal;color:var(--signal-ink);
+  background:linear-gradient(transparent 62%, rgba(224,162,60,0.45) 0%);
+}
+.hero__sub{
+  margin-top:26px;
+  font-size:18px;
+  color:var(--ink-soft);
+  max-width:46ch;
+  line-height:1.65;
+}
+.hero__actions{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;}
+
+.hero__portrait{
+  position:relative;
+  display:flex;justify-content:center;
+}
+.hero__portrait-inner{
+  position:relative;
+  width:100%;max-width:400px;
+}
+@media (max-width:900px){
+  .hero__portrait-inner{max-width:340px;}
+}
+.hero__photo-frame{
+  position:relative;
+  aspect-ratio:4/5;
+  border-radius:var(--radius-l);
+  overflow:hidden;
+  background:var(--card);
+  box-shadow:var(--shadow-lift);
+}
+.hero__wave{
+  position:absolute;
+  left:50%;top:8%;
+  transform:translateX(-50%);
+  width:140%;
+  z-index:0;
+  opacity:0.4;
+}
+.hero__wave path{
+  fill:none;stroke:var(--trace);stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:900;stroke-dashoffset:900;
+}
+@media (prefers-reduced-motion: no-preference){
+  .hero__wave path{animation:draw 2.2s var(--ease) 0.3s forwards;}
+}
+@media (prefers-reduced-motion: reduce){
+  .hero__wave path{stroke-dashoffset:0;}
+}
+@keyframes draw{to{stroke-dashoffset:0;}}
+
+.hero__photo{
+  position:absolute;inset:0;z-index:1;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:top center;
+}
+.hero__chip{
+  position:absolute;z-index:2;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;letter-spacing:0.01em;
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:8px 12px;border-radius:100px;
+  display:flex;align-items:center;gap:7px;
+  box-shadow:0 12px 28px -14px rgba(16,20,17,0.22);
+}
+.hero__chip .dot{width:5px;height:5px;border-radius:50%;background:var(--trace);flex-shrink:0;}
+.hero__chip--1{top:6%;left:-6%;}
+.hero__chip--2{top:38%;right:-9%;}
+.hero__chip--3{bottom:10%;left:-4%;}
+@media (max-width:900px){
+  .hero__chip--1{left:0;top:0;}
+  .hero__chip--2{right:0;top:32%;}
+  .hero__chip--3{left:0;bottom:4%;}
+}
+@media (prefers-reduced-motion: no-preference){
+  .hero__chip{opacity:0;animation:chip-in 0.7s var(--ease) forwards;}
+  .hero__chip--1{animation-delay:0.9s;}
+  .hero__chip--2{animation-delay:1.05s;}
+  .hero__chip--3{animation-delay:1.2s;}
+  .hero__photo{opacity:0;transform:translateY(14px) scale(0.98);animation:photo-in 0.9s var(--ease) 0.15s forwards;}
+  .hero h1{opacity:0;transform:translateY(10px);animation:rise-in 0.8s var(--ease) 0.1s forwards;}
+  .hero__sub{opacity:0;transform:translateY(10px);animation:rise-in 0.8s var(--ease) 0.28s forwards;}
+  .hero__actions{opacity:0;transform:translateY(10px);animation:rise-in 0.8s var(--ease) 0.4s forwards;}
+  .hero__intro{opacity:0;animation:fade-in 0.7s var(--ease) 0s forwards;}
+}
+@keyframes chip-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes photo-in{to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes rise-in{to{opacity:1;transform:translateY(0);}}
+@keyframes fade-in{to{opacity:1;}}
+
+.hero__divider{
+  margin-top:80px;
+  border:none;border-top:1px solid var(--line);
+}
+
+/* ============ SECTION HEADERS ============ */
+.section{padding:100px 0;}
+.section--tight{padding:70px 0;}
+@media (max-width:900px){.section{padding:64px 0;}}
+.section__head{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:30px;
+  margin-bottom:52px;
+}
+@media (max-width:700px){.section__head{flex-direction:column;align-items:flex-start;gap:16px;}}
+.section__head h2{
+  font-size:clamp(1.7rem,3vw,2.4rem);
+  max-width:16ch;
+  letter-spacing:-0.02em;
+}
+.section__head p{color:var(--ink-soft);max-width:34ch;font-size:15.5px;line-height:1.6;}
+
+/* ============ WORKS BENTO ============ */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:22px;
+}
+.work-card{
+  position:relative;
+  border-radius:var(--radius-l);
+  background:var(--card);
+  border:1px solid var(--line-soft);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.work-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 30px 60px -30px rgba(16,20,17,0.35);
+}
+.work-card:active{transform:translateY(-2px) scale(0.995);}
+.work-card__media{
+  position:relative;
+  aspect-ratio:16/10;
+  overflow:hidden;
+  background:var(--deep);
+  flex:1 1 auto;
+}
+.work-card--tall .work-card__media{aspect-ratio:16/12;}
+.work-card__media img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  transition:transform 0.6s var(--ease);
+}
+.work-card:hover .work-card__media img{transform:scale(1.045);}
+.work-card__tag{
+  position:absolute;top:14px;left:14px;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.03em;
+  padding:6px 10px;border-radius:100px;
+  background:rgba(20,24,26,0.55);color:#fff;
+  backdrop-filter:blur(6px);
+}
+.work-card__body{padding:24px 26px 26px;flex:0 0 212px;display:flex;flex-direction:column;}
+.work-card__title{font-size:19px;margin-bottom:8px;letter-spacing:-0.01em;}
+.work-card__desc{color:var(--ink-soft);font-size:14.5px;line-height:1.55;flex:1;}
+.work-card__foot{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);
+}
+.work-card__stat{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink);}
+.work-card__go{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.25s var(--ease), border-color .25s var(--ease), transform 0.25s var(--ease);
+}
+.work-card__go svg{width:14px;height:14px;}
+.work-card:hover .work-card__go{background:var(--ink);border-color:var(--ink);color:var(--paper);transform:rotate(45deg);}
+
+.c-span-7{grid-column:span 7;}
+.c-span-5{grid-column:span 5;}
+.c-span-4{grid-column:span 4;}
+.c-span-3{grid-column:span 3;}
+@media (max-width:980px){
+  .c-span-7,.c-span-5,.c-span-4,.c-span-3{grid-column:span 12;}
+  .work-card__media{flex:initial;}
+  .work-card__body{flex:initial;}
+}
+
+/* ============ EXPERIENCE ============ */
+.timeline{position:relative;}
+.timeline::before{
+  content:"";position:absolute;left:9px;top:8px;bottom:8px;width:1px;
+  background:var(--line);
+}
+.trole{
+  position:relative;
+  padding:0 0 40px 44px;
+}
+.trole:last-child{padding-bottom:0;}
+.trole::before{
+  content:"";position:absolute;left:2px;top:6px;
+  width:17px;height:17px;border-radius:50%;
+  background:var(--paper);border:1.5px solid var(--ink);
+}
+.trole--current::before{background:var(--signal);border-color:var(--signal-ink);}
+.trole__row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;
+}
+.trole__title{font-size:20px;font-family:'Space Grotesk',sans-serif;font-weight:600;}
+.trole__org{color:var(--ink-soft);font-size:15px;margin-top:4px;}
+.trole__meta{
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-faint);
+  text-align:right;white-space:nowrap;
+}
+.trole__meta span{display:block;}
+.trole:not(:last-child){border-bottom:1px solid var(--line-soft);}
+.trole__row{padding-bottom:22px;}
+
+/* ============ CONTACT / FOOTER ============ */
+.deep{background:var(--deep);color:var(--deep-ink);}
+.deep .section__head p{color:var(--deep-ink-soft);}
+.contact{padding:110px 0 60px;}
+.contact__top{
+  display:grid;grid-template-columns:1.3fr 1fr;gap:60px;
+  padding-bottom:70px;border-bottom:1px solid var(--deep-line);
+}
+@media (max-width:900px){.contact__top{grid-template-columns:1fr;gap:40px;}}
+.contact h2{
+  font-size:clamp(2rem,4.4vw,3.4rem);
+  line-height:1.08;letter-spacing:-0.02em;
+  max-width:14ch;
+}
+.contact__lede{color:var(--deep-ink-soft);margin-top:22px;max-width:40ch;font-size:16.5px;}
+.contact__actions{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;}
+.contact__list{display:flex;flex-direction:column;}
+.contact__row{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 0;border-bottom:1px solid var(--deep-line);
+  transition:padding-left 0.3s var(--ease);
+}
+.contact__row:hover{padding-left:8px;}
+.contact__row:first-child{padding-top:0;}
+.contact__icon{
+  width:38px;height:38px;border-radius:10px;
+  border:1px solid var(--deep-line);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.contact__icon svg{width:17px;height:17px;}
+.contact__row-label{font-size:11.5px;font-family:'IBM Plex Mono',monospace;color:var(--deep-ink-soft);margin-bottom:3px;}
+.contact__row-value{font-size:16px;}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:36px;flex-wrap:wrap;gap:14px;
+  font-size:13px;color:var(--deep-ink-soft);
+}
+.footer-bottom a{color:var(--deep-ink);}
+
+/* ============ PROJECT VIEW ============ */
+.project-view{display:none;}
+.p-back{
+  position:fixed;top:86px;left:max(40px, calc((100vw - var(--maxw)) / 2 + 40px));z-index:69;
+  display:flex;align-items:center;gap:8px;
+  font-size:13.5px;padding:9px 16px 9px 12px;border-radius:100px;
+  background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  box-shadow:0 12px 28px -18px rgba(16,20,17,0.25);
+  transition:transform 0.2s var(--ease);
+}
+.p-back svg{width:15px;height:15px;}
+.p-back:hover{transform:translateX(-3px);}
+@media (max-width:900px){.p-back{left:22px;top:80px;}}
+
+.p-hero{
+  padding-top:160px;
+}
+@media (max-width:900px){.p-hero{padding-top:150px;}}
+.p-hero__meta-top{
+  display:flex;align-items:center;gap:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);
+  margin-bottom:20px;
+}
+.p-hero h1{
+  font-size:clamp(2.1rem,4.6vw,3.6rem);
+  max-width:16ch;letter-spacing:-0.03em;line-height:1.05;
+}
+.p-hero__sub{margin-top:20px;font-size:18px;color:var(--ink-soft);max-width:52ch;}
+.p-hero__facts{
+  margin-top:40px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--radius-m);
+  overflow:hidden;
+}
+@media (max-width:760px){.p-hero__facts{grid-template-columns:repeat(2,1fr);}}
+.p-hero__fact{background:var(--paper);padding:18px 20px;}
+.p-hero__fact-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);letter-spacing:0.02em;margin-bottom:6px;}
+.p-hero__fact-value{font-size:14.5px;font-weight:500;}
+.p-hero__cover{
+  margin-top:50px;border-radius:var(--radius-l);overflow:hidden;
+  border:1px solid var(--line);
+}
+.p-hero__cover img{width:100%;height:auto;object-fit:cover;}
+
+.p-section{padding-top:70px;padding-bottom:70px;border-top:1px solid var(--line-soft);}
+.p-section--first{border-top:none;}
+.p-section__grid{display:grid;grid-template-columns:0.42fr 1.58fr;gap:60px;}
+@media (max-width:820px){.p-section__grid{grid-template-columns:1fr;gap:20px;}}
+.p-section__label{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-faint);
+  position:sticky;top:110px;align-self:start;
+}
+.p-section__body h3{font-size:1.5rem;margin:0 0 16px auto;letter-spacing:-0.01em;max-width:860px;}
+.p-section__body p{color:var(--ink-soft);font-size:16px;line-height:1.7;max-width:860px;margin-left:auto;}
+.p-section__body p + p{margin-top:16px;}
+.p-list{display:flex;flex-direction:column;gap:14px;max-width:860px;margin:18px 0 0 auto;}
+.p-list li{
+  display:flex;gap:14px;color:var(--ink-soft);font-size:15.5px;line-height:1.6;
+  padding-bottom:14px;border-bottom:1px solid var(--line-soft);
+}
+.p-list li:last-child{border-bottom:none;padding-bottom:0;}
+.p-list .num{
+  font-family:'IBM Plex Mono',monospace;color:var(--ink-faint);font-size:13px;flex-shrink:0;padding-top:2px;
+}
+.p-list strong{color:var(--ink);font-weight:600;}
+
+.p-img{border-radius:var(--radius-m);overflow:hidden;border:1px solid var(--line);max-width:860px;margin:28px 0 0 auto;}
+.p-img img{width:100%;height:auto;}
+.p-img figcaption{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);
+  padding:12px 4px 0;
+}
+
+.p-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--radius-m);overflow:hidden;max-width:860px;margin:10px 0 0 auto;
+}
+@media (max-width:700px){.p-stats{grid-template-columns:1fr;}}
+.p-stat{background:var(--card);padding:28px 26px;}
+.p-stat__num{font-family:'IBM Plex Mono',monospace;font-size:2.2rem;color:var(--signal-ink);font-weight:500;}
+.p-stat__label{font-size:13.5px;color:var(--ink-soft);margin-top:8px;line-height:1.5;}
+
+.p-compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-m);overflow:hidden;max-width:860px;margin:10px 0 0 auto;}
+@media (max-width:700px){.p-compare{grid-template-columns:1fr;}}
+.p-compare__col{background:var(--card);padding:24px 26px;}
+.p-compare__head{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.02em;color:var(--ink-faint);margin-bottom:14px;}
+.p-compare__col ul li{
+  font-size:14.5px;color:var(--ink-soft);padding:9px 0;border-top:1px solid var(--line-soft);
+}
+.p-compare__col ul li:first-child{border-top:none;}
+.p-compare__col--after .p-compare__head{color:var(--signal-ink);}
+
+.p-tagrow{display:flex;flex-wrap:wrap;gap:10px;max-width:860px;margin:20px 0 0 auto;}
+.p-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;padding:7px 13px;border-radius:100px;
+  border:1px solid var(--line);color:var(--ink-soft);
+}
+
+.p-close{
+  padding-top:90px;padding-bottom:70px;
+  border-top:1px solid var(--line-soft);
+}
+.p-close blockquote{
+  font-family:'Space Grotesk',sans-serif;font-size:clamp(1.4rem,2.6vw,2rem);
+  font-weight:500;letter-spacing:-0.01em;line-height:1.35;
+  max-width:32ch;margin:0 0 40px;
+}
+.p-nextrow{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-top:30px;border-top:1px solid var(--line);}
+.p-next{display:flex;align-items:center;gap:14px;font-size:15px;}
+.p-next__arrow{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;transition:transform .25s var(--ease), background .25s var(--ease);
+}
+.p-next:hover .p-next__arrow{background:var(--ink);color:var(--paper);transform:translateX(3px);}
+.p-next__arrow svg{width:16px;height:16px;}
+
+.feature-map{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:860px;margin:10px 0 0 auto;}
+@media (max-width:760px){.feature-map{grid-template-columns:1fr 1fr;}}
+@media (max-width:520px){.feature-map{grid-template-columns:1fr;}}
+.feature-map__item{
+  border:1px solid var(--line);border-radius:var(--radius-m);padding:20px;
+  background:var(--card);
+}
+.feature-map__item h4{font-size:14.5px;margin-bottom:8px;}
+.feature-map__item p{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+
+/* accent dot utility */
+.dot-accent{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:8px;}
+
+/* ============ SCROLL REVEAL ============ */
+.reveal{
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+
+@media (prefers-reduced-motion: reduce){
+  .work-card, .work-card__media img, .nav__cta, .btn, .p-next__arrow{transition:none !important;}
+  .work-card:hover{transform:none;}
+  .reveal{opacity:1;transform:none;transition:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+
+<nav class="nav" id="siteNav">
+  <div class="wrap nav__row">
+    <a href="#home" class="brand" data-nav-home>
+      <span class="brand__mark">HM</span>
+      <span>
+        <span class="brand__name">Hemanth Majji</span>
+        <span class="brand__role">Senior UX/UI Designer</span>
+      </span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a class="nav__link" href="#home" data-scroll="works">Work</a>
+      <a class="nav__link" href="#home" data-scroll="experience">Experience</a>
+      <a class="nav__link" href="#home" data-scroll="contact">Contact</a>
+      <a class="nav__cta" href="mailto:hemanth.majji@gmail.com">
+        Get in touch
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+      </a>
+    </div>
+    <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<a href="#home" data-scroll="top" class="p-back" id="backLink" style="display:none;">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18L9 12L15 6"/></svg>
+  Back to Home
+</a>
+
+<!-- ============================================================ HOME ============================================================ -->
+<main id="view-home">
+
+  <section class="hero wrap">
+    <div class="hero__grid">
+      <div>
+        <div class="hero__intro"><span class="dot"></span> Hey, I'm Hemanth, based in Bengaluru</div>
+        <h1>I design calm into clinical chaos.</h1>
+        <p class="hero__sub">Senior UX/UI Designer with 10+ years turning fragmented healthcare software, patient monitoring dashboards, staffing platforms, and care workflows into products clinicians actually trust.</p>
+        <div class="hero__actions">
+          <a href="#home" data-scroll="works" class="btn btn--primary">
+            See the work
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg>
+          </a>
+          <a href="#home" data-scroll="contact" class="btn btn--ghost">Get in touch</a>
+        </div>
+      </div>
+      <div class="hero__portrait">
+        <div class="hero__portrait-inner">
+          <svg class="hero__wave" viewBox="0 0 500 200" preserveAspectRatio="none">
+            <path d="M0,100 L90,100 L110,60 L130,150 L150,20 L170,100 L230,100 L250,80 L270,100 L500,100"/>
+          </svg>
+          <div class="hero__photo-frame">
+            <img class="hero__photo" src="assets/img1.png" alt="Portrait of Hemanth Majji" width="520" height="923">
+          </div>
+          <div class="hero__chip hero__chip--1"><span class="dot"></span>10+ yrs experience</div>
+          <div class="hero__chip hero__chip--2"><span class="dot"></span>Healthcare UX</div>
+          <div class="hero__chip hero__chip--3"><span class="dot"></span>Bengaluru, IN</div>
+        </div>
+      </div>
+    </div>
+    <hr class="hero__divider">
+  </section>
+
+  <section class="section" id="works">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <h2>Five products, one throughline: less friction for the people delivering care.</h2>
+        <p>Remote patient monitoring, on-demand staffing, clinical task management, and the internal tools that keep a design team honest.</p>
+      </div>
+
+      <div class="bento">
+        <a href="#rpm" class="work-card work-card--tall c-span-7 reveal">
+          <div class="work-card__media"><span class="work-card__tag">Flagship case study</span><img src="assets/img2.jpeg" alt="Care@Home remote patient monitoring dashboard, before and after redesign"></div>
+          <div class="work-card__body">
+            <h3 class="work-card__title">Reimagining Care@Home</h3>
+            <p class="work-card__desc">Evolving a remote patient monitoring platform from a developer-built interface into a scalable, user-centered product for clinicians.</p>
+            <div class="work-card__foot">
+              <span class="work-card__stat">−35% task completion time</span>
+              <span class="work-card__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#ptm" class="work-card work-card--tall c-span-5 reveal">
+          <div class="work-card__media"><span class="work-card__tag">Case study</span><img src="assets/img3.jpeg" alt="Patient Task Management Module dashboard screenshot"></div>
+          <div class="work-card__body">
+            <h3 class="work-card__title">Patient Task Management</h3>
+            <p class="work-card__desc">Moving task control from hardcoded backend logic into the clinician's own hands.</p>
+            <div class="work-card__foot">
+              <span class="work-card__stat">+30% faster assignment</span>
+              <span class="work-card__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#nurseready" class="work-card c-span-5 reveal">
+          <div class="work-card__media"><span class="work-card__tag">Case study</span><img src="assets/img4.jpeg" alt="NurseReady team of nurses, on-demand staffing platform"></div>
+          <div class="work-card__body">
+            <h3 class="work-card__title">NurseReady</h3>
+            <p class="work-card__desc">On-demand nurse staffing for hospitals, built from a raw business idea to a dev-ready product.</p>
+            <div class="work-card__foot">
+              <span class="work-card__stat">Dev-ready, 0→1</span>
+              <span class="work-card__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#chara" class="work-card c-span-3 reveal">
+          <div class="work-card__media"><span class="work-card__tag">Experiment</span><img src="assets/img5.jpeg" alt="Chara AI clinical assistant concept cover"></div>
+          <div class="work-card__body">
+            <h3 class="work-card__title">Chara AI</h3>
+            <p class="work-card__desc">An AI clinical companion concept, stitched into the RPM workflow.</p>
+            <div class="work-card__foot">
+              <span class="work-card__stat">Concept</span>
+              <span class="work-card__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#orbito" class="work-card c-span-4 reveal">
+          <div class="work-card__media"><span class="work-card__tag">Internal tool</span><img src="assets/img6.jpeg" alt="Orbito work management tool cover, dark space theme"></div>
+          <div class="work-card__body">
+            <h3 class="work-card__title">Orbito</h3>
+            <p class="work-card__desc">A lightweight, agency-first system that replaced spreadsheets and DMs with one shared source of truth.</p>
+            <div class="work-card__foot">
+              <span class="work-card__stat">Adopted team-wide</span>
+              <span class="work-card__go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="experience">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <h2>Ten years of Design Journey</h2>
+        <p>From web design to leading UX for healthcare SaaS platforms used by real clinicians.</p>
+      </div>
+      <div class="timeline">
+        <div class="trole trole--current reveal">
+          <div class="trole__row">
+            <div>
+              <div class="trole__title">Sr. UX/UI Designer</div>
+              <div class="trole__org">thinkB Creative Agency · Bangalore, India</div>
+            </div>
+            <div class="trole__meta"><span>May 2025 to Dec 2025</span></div>
+          </div>
+        </div>
+        <div class="trole reveal">
+          <div class="trole__row">
+            <div>
+              <div class="trole__title">Sr. UX/UI Designer</div>
+              <div class="trole__org">Biofourmis · Bangalore, India</div>
+            </div>
+            <div class="trole__meta"><span>Sep 2019 to Feb 2025</span></div>
+          </div>
+        </div>
+        <div class="trole reveal">
+          <div class="trole__row">
+            <div>
+              <div class="trole__title">UX/UI Designer</div>
+              <div class="trole__org">Hashtaag Technologies · Bangalore, India</div>
+            </div>
+            <div class="trole__meta"><span>Jul 2017 to Sep 2019</span></div>
+          </div>
+        </div>
+        <div class="trole reveal">
+          <div class="trole__row">
+            <div>
+              <div class="trole__title">UX/UI Design Intern</div>
+              <div class="trole__org">DesignBoat UI/UX Studio · Bangalore, India</div>
+            </div>
+            <div class="trole__meta"><span>May 2017 to Jun 2017</span></div>
+          </div>
+        </div>
+        <div class="trole reveal">
+          <div class="trole__row">
+            <div>
+              <div class="trole__title">Web Designer</div>
+              <div class="trole__org">Spreadon Technologies · Bangalore, India</div>
+            </div>
+            <div class="trole__meta"><span>Sep 2014 to Dec 2016</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="deep" id="contact">
+    <div class="wrap contact">
+      <div class="contact__top reveal">
+        <div>
+          <h2>Let's build something clinicians actually enjoy using.</h2>
+          <p class="contact__lede">Open to senior/lead UX roles and select consulting work in healthcare and complex SaaS. Based in Bengaluru, happy to work remote.</p>
+          <div class="contact__actions">
+            <a class="btn btn--on-dark" href="mailto:hemanth.majji@gmail.com">
+              Email me
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+            </a>
+            <a class="btn btn--ghost-dark" href="https://www.linkedin.com/in/hemanthmajji/" target="_blank" rel="noopener">View LinkedIn</a>
+          </div>
+        </div>
+        <div class="contact__list">
+          <a class="contact__row" href="mailto:hemanth.majji@gmail.com">
+            <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6l9 7 9-7M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg></span>
+            <span><span class="contact__row-label">Email</span><span class="contact__row-value">hemanth.majji@gmail.com</span></span>
+          </a>
+          <a class="contact__row" href="https://www.linkedin.com/in/hemanthmajji/" target="_blank" rel="noopener">
+            <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.5 9v9M6.5 5.5v.01M11 18v-5.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5V18M11 12v6"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
+            <span><span class="contact__row-label">LinkedIn</span><span class="contact__row-value">/in/hemanthmajji</span></span>
+          </a>
+          <a class="contact__row" href="tel:+919966992232">
+            <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+            <span><span class="contact__row-label">Phone</span><span class="contact__row-value">+91 99669 92232</span></span>
+          </a>
+          <a class="contact__row" href="https://maps.google.com/?q=Bengaluru" target="_blank" rel="noopener">
+            <span class="contact__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11a7 7 0 0114 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+            <span><span class="contact__row-label">Location</span><span class="contact__row-value">Bengaluru, India</span></span>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Hemanth Majji. Built with a little too much care.</span>
+        <a href="#home" data-scroll="top">Back to top ↑</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ PROJECT: RPM ============================================================ -->
+<main class="project-view" id="view-rpm">
+  <section class="p-hero wrap">
+    <div class="p-hero__meta-top"><span class="dot-accent" style="background:var(--rpm)"></span>Case study · 01</div>
+    <h1>Reimagining Care@Home</h1>
+    <p class="p-hero__sub">Evolving a remote patient monitoring platform from a developer-built interface into a scalable, user-centered product.</p>
+    <div class="p-hero__facts">
+      <div class="p-hero__fact"><div class="p-hero__fact-label">ROLE</div><div class="p-hero__fact-value">Senior UX/UI Designer</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">DOMAIN</div><div class="p-hero__fact-value">Healthcare · Remote Monitoring</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">USERS</div><div class="p-hero__fact-value">Clinicians, nurses, care teams</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">TEAM</div><div class="p-hero__fact-value">PM · UXR · Eng · Design</div></div>
+    </div>
+    <div class="p-hero__cover"><img src="assets/img7.jpeg" alt="Care@Home dashboard before and after redesign"></div>
+  </section>
+
+  <section class="p-section p-section--first wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The story</div>
+      <div class="p-section__body">
+        <h3>From developer-led UI to user-centered UX</h3>
+        <p>As Care@Home grew, more patients, more workflows and more clinical requirements were layered onto the platform. The interface, originally built by engineers to get something shipped, became increasingly complex and inconsistent, and it started to show.</p>
+        <p>My opportunity was to evolve the experience by rebuilding the information architecture, establishing a real design system, and rethinking the clinical workflows that mattered most.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The process</div>
+      <div class="p-section__body">
+        <h3>Four moves, in order</h3>
+        <ul class="p-list">
+          <li><span class="num">01</span><span><strong>Understand.</strong> Mapped the existing product, workflows, and information architecture.</span></li>
+          <li><span class="num">02</span><span><strong>Listen.</strong> Worked with UX research and clinicians to identify usability problems and workflow friction.</span></li>
+          <li><span class="num">03</span><span><strong>Structure.</strong> Improved the IA and established reusable design patterns.</span></li>
+          <li><span class="num">04</span><span><strong>Solve.</strong> Focused on the critical workflows where complexity had the greatest impact.</span></li>
+        </ul>
+        <p style="margin-top:22px;">Starting with IA meant mapping the existing data hierarchy first. What we found was a maze: critical data buried under tabs built from backend logic rather than workflow logic. We reorganized it to follow a nurse's real routine instead: assess, prioritize, act, review.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Design system</div>
+      <div class="p-section__body">
+        <h3>Clarity, balanced with compassion</h3>
+        <p>Redesigning components meant balancing clarity with compassion, with colors, spacing and type all chosen to reduce visual fatigue over a long shift. Blue tones signified stability; neutrals let critical alerts stand out naturally instead of alarmingly; typography was tuned for readability at a glance.</p>
+        <p>Buttons, text fields, tooltips, dropdowns, switches and selectors were rebuilt from scratch as a shared system, and every micro-decision, from filters to toggles and dropdowns, was guided by one principle: predictability and speed. When we tested the new design with nurses, they intuitively completed tasks 40% faster. One clinician summed it up simply: she didn't have to think about where to click; it just worked.</p>
+        <figure class="p-img"><img src="assets/img8.jpeg" alt="Vital design system guideline screens for buttons and tooltips"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Rethinking the dashboard</div>
+      <div class="p-section__body">
+        <h3>A dashboard shaped by clinicians and the market</h3>
+        <p>We reworked the dashboard around the moments clinicians returned to most: identifying patients who needed attention, understanding why, and acting quickly. Their input made the gaps in the existing experience clear. Important signals were difficult to spot, context was spread across the interface, and the path from insight to action took too long.</p>
+        <p>At the same time, we looked at where remote patient monitoring was heading. As patient panels and care programs grew, the product needed clearer prioritization, scalable workflows, and a stronger foundation for proactive care. The redesign brought those clinical and business needs together, making the dashboard easier to use today while preparing it for what the RPM industry was beginning to demand.</p>
+        <p>One outcome was the Critical Alerts View, a single-glance summary of high-risk patients shaped by clinician feedback and designed to help care teams act with more confidence.</p>
+        <figure class="p-img"><img src="assets/img7b.jpeg" alt="Care@Home dashboard showing a patient's vital trend and open event alerts"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Results</div>
+      <div class="p-section__body">
+        <h3>What changed, measurably</h3>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat__num">−35%</div><div class="p-stat__label">reduction in clinician task completion time</div></div>
+          <div class="p-stat"><div class="p-stat__num">−25%</div><div class="p-stat__label">decrease in reported usability errors</div></div>
+          <div class="p-stat"><div class="p-stat__num">90%</div><div class="p-stat__label">satisfaction rating among clinicians surveyed</div></div>
+        </div>
+        <p style="margin-top:26px;">Three things I keep carrying forward: design around the user's real workflow, not the backend's logic. Refine iteratively against real feedback, not assumptions. And use data such as task times, error rates, and satisfaction to know whether a redesign actually worked.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-close wrap">
+    <blockquote>The next step is making the dashboard proactive by surfacing AI-driven insights that suggest interventions before conditions worsen.</blockquote>
+    <div class="p-nextrow">
+      <a class="btn btn--ghost" href="#home" data-scroll="top">All work</a>
+      <a class="p-next" href="#ptm">
+        Next: Patient Task Management
+        <span class="p-next__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ PROJECT: PTM ============================================================ -->
+<main class="project-view" id="view-ptm">
+  <section class="p-hero wrap">
+    <div class="p-hero__meta-top"><span class="dot-accent" style="background:var(--ptm)"></span>Case study · 02</div>
+    <h1>Patient Task Management Module</h1>
+    <p class="p-hero__sub">A remote patient monitoring solution empowering clinicians to manage patient tasks seamlessly instead of waiting on engineers to do it for them.</p>
+    <div class="p-hero__facts">
+      <div class="p-hero__fact"><div class="p-hero__fact-label">ROLE</div><div class="p-hero__fact-value">UX/UI Designer</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">DOMAIN</div><div class="p-hero__fact-value">Remote Patient Monitoring</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">USERS</div><div class="p-hero__fact-value">Clinicians</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">IMPACT</div><div class="p-hero__fact-value">80% less backend dependency</div></div>
+    </div>
+    <div class="p-hero__cover"><img src="assets/img9.jpeg" alt="Patient Task Management Module weekly task board"></div>
+  </section>
+
+  <section class="p-section p-section--first wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The challenge</div>
+      <div class="p-section__body">
+        <h3>A system stuck in the past</h3>
+        <p>In the remote patient monitoring system, clinicians had no direct control over patient tasks. Tasks were hardcoded in the backend, requiring manual intervention from engineers for every change. There was no flexibility to modify, add, or track tasks, and no visibility into progress, which caused real delays in patient care.</p>
+        <p><strong>Key question:</strong> how might we enable clinicians to manage tasks independently while improving efficiency and patient engagement?</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The solution</div>
+      <div class="p-section__body">
+        <h3>A clinician-controlled task module</h3>
+        <p>I designed and implemented a new task management module that let clinicians create and assign tasks to patients directly from their dashboard, modify and track progress without backend dependency, and sync tasks seamlessly with the patient's mobile app. This shifted power from backend-controlled to clinician-driven.</p>
+        <figure class="p-img"><img src="assets/img10.jpeg" alt="Care plan weekly task board screenshot"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The process</div>
+      <div class="p-section__body">
+        <h3>Research, ideation, prototype</h3>
+        <ul class="p-list">
+          <li><span class="num">01</span><span><strong>Research.</strong> Interviewed clinicians on how they currently handle patient tasks, and audited comparable apps for best practice.</span></li>
+          <li><span class="num">02</span><span><strong>Ideation.</strong> Proposed a calendar-based system, but given dev constraints, settled on a balanced week-view MVP the team could actually ship.</span></li>
+          <li><span class="num">03</span><span><strong>UI design.</strong> Started from the existing calendar patterns; early iterations felt cluttered, so I refined it into a clean, structured layout.</span></li>
+          <li><span class="num">04</span><span><strong>Prototype & test.</strong> Built an interactive prototype, tested with clinicians, and incorporated their feedback before build.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Before / after</div>
+      <div class="p-section__body">
+        <h3>The measurable success of UX thinking</h3>
+        <div class="p-compare">
+          <div class="p-compare__col">
+            <div class="p-compare__head">BEFORE: BACKEND-ONLY</div>
+            <ul>
+              <li>Tasks manually assigned by engineers</li>
+              <li>No ability to modify or customize tasks</li>
+              <li>No visibility into task completion</li>
+              <li>Slow workflow, delaying patient care</li>
+            </ul>
+          </div>
+          <div class="p-compare__col p-compare__col--after">
+            <div class="p-compare__head">AFTER: CLINICIAN-CONTROLLED</div>
+            <ul>
+              <li>Self-service task management for clinicians</li>
+              <li>Flexible task creation & updates</li>
+              <li>Real-time tracking of patient progress</li>
+              <li>Instant task assignment & syncing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="p-stats" style="margin-top:22px;">
+          <div class="p-stat"><div class="p-stat__num">80%</div><div class="p-stat__label">reduction in backend intervention for task assignments</div></div>
+          <div class="p-stat"><div class="p-stat__num">30%</div><div class="p-stat__label">faster task assignment, improving patient response time</div></div>
+          <div class="p-stat"><div class="p-stat__num">↑</div><div class="p-stat__label">higher clinician engagement and better patient adherence</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-close wrap">
+    <blockquote>This shift streamlined workflows, but it also quietly gave power back to the people who needed it most.</blockquote>
+    <div class="p-nextrow">
+      <a class="btn btn--ghost" href="#home" data-scroll="top">All work</a>
+      <a class="p-next" href="#nurseready">
+        Next: NurseReady
+        <span class="p-next__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ PROJECT: NURSEREADY ============================================================ -->
+<main class="project-view" id="view-nurseready">
+  <section class="p-hero wrap">
+    <div class="p-hero__meta-top"><span class="dot-accent" style="background:var(--nr)"></span>Case study · 03</div>
+    <h1>NurseReady</h1>
+    <p class="p-hero__sub">On-demand nurse staffing for hospitals, taken from a raw business idea to a fully designed, development-ready product.</p>
+    <div class="p-hero__facts">
+      <div class="p-hero__fact"><div class="p-hero__fact-label">ROLE</div><div class="p-hero__fact-value">UX/UI Designer, 0→1</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">DOMAIN</div><div class="p-hero__fact-value">Healthcare Staffing</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">USERS</div><div class="p-hero__fact-value">Hospitals, nurses, admins</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">STATUS</div><div class="p-hero__fact-value">Design complete, dev-ready</div></div>
+    </div>
+    <div class="p-hero__cover"><img src="assets/img11.jpeg" alt="NurseReady team of nurses cover image"></div>
+  </section>
+
+  <section class="p-section p-section--first wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The story</div>
+      <div class="p-section__body">
+        <h3>Understanding the idea before designing a single screen</h3>
+        <p>NurseReady was born to close the growing gap between hospitals and qualified nurses, enabling fast, reliable, on-demand staffing through a single platform. It started as a business idea from a client deeply embedded in the hospital ecosystem, who understood the problem well but hadn't yet shaped it into a product.</p>
+        <p>My first responsibility wasn't to design screens. It was to understand the reality behind the idea. I listened closely to how hospitals actually function during staffing shortages, how nurses take up short-term work, and where trust, payments and coordination usually break down.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Problem statement</div>
+      <div class="p-section__body">
+        <h3>Urgency on one side, flexibility on the other</h3>
+        <p>Hospitals frequently face sudden patient inflow, staff unavailability, night shifts, or temporary coverage gaps, while existing hiring systems are built for long-term recruitment and are too slow and rigid for urgent needs.</p>
+        <p>At the same time, many qualified nurses are willing to take short-duration or flexible shifts, but lack a reliable platform that connects them to nearby hospitals in real time, ensures fair payment, and gives clarity on job details before they accept.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Validating first</div>
+      <div class="p-section__body">
+        <h3>Before building anything</h3>
+        <p>I identified the need for a unified system that balances hospital urgency with nurse availability, trust and ease of use. Before committing to execution, I validated it. I studied the market (no direct competitors in India, similar models existed in the US and UK) and spoke directly with hospitals and nurses from our existing network. The response was consistently positive: hospitals valued speed and reliability, nurses liked the flexibility and short-term earning opportunities. That gave us confidence to move fast.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Defining the product</div>
+      <div class="p-section__body">
+        <h3>Mapping every workflow before a pixel</h3>
+        <p>I mapped end-to-end workflows for hospitals, nurses and admins to ensure clarity, speed and minimal operational friction. With that clarity, I authored the Product Requirement Document, defining how hospitals raise urgent requests, how nurses receive and accept nearby jobs, how payments flow through the platform, and what happens when a request isn't fulfilled automatically.</p>
+        <p>From there I designed the end-to-end user flows and reviewed them in detail with designers and developers. Those discussions ensured everyone understood not just what we were building, but why. Only once the logic was solid did we move to visuals.</p>
+        <figure class="p-img"><img src="assets/img12.jpeg" alt="Admin view information architecture flow diagram for NurseReady"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Key decisions</div>
+      <div class="p-section__body">
+        <h3>Designing under real constraints</h3>
+        <p>Timelines were tight, so I made a conscious decision to wireframe only the critical flows first, to validate direction with the client early. Once approved, we moved quickly into UI design, built a component library for consistency and speed, and completed the UI across every platform with interactive prototypes reflecting real-time behaviour.</p>
+        <ul class="p-list">
+          <li><span class="num">→</span><span>Real-time, location-based requests to reduce hospital wait time.</span></li>
+          <li><span class="num">→</span><span>Accept-or-decline nurse flow designed for speed, not browsing.</span></li>
+          <li><span class="num">→</span><span>Centralized payments via NurseReady to build trust on both sides.</span></li>
+          <li><span class="num">→</span><span>Admin fallback mechanism to guarantee fulfillment even when nurse response is low.</span></li>
+          <li><span class="num">→</span><span>Clear status visibility across request, assignment, completion and payout.</span></li>
+        </ul>
+        <figure class="p-img"><img src="assets/img12a.jpg" alt="NurseReady dashboard shown across desktop, tablet and mobile screens"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-close wrap">
+    <blockquote>NurseReady evolved into a fully designed, development-ready staffing system with clear workflows for hospitals, nurses, and platform operations.</blockquote>
+    <div class="p-nextrow">
+      <a class="btn btn--ghost" href="#home" data-scroll="top">All work</a>
+      <a class="p-next" href="#chara">
+        Next: Chara AI
+        <span class="p-next__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ PROJECT: CHARA AI ============================================================ -->
+<main class="project-view" id="view-chara">
+  <section class="p-hero wrap">
+    <div class="p-hero__meta-top"><span class="dot-accent" style="background:var(--chara)"></span>Experiment · 04</div>
+    <h1>Chara AI</h1>
+    <p class="p-hero__sub">Redefining remote patient monitoring with intelligent clinical support, a concept exploration for an AI companion embedded in the clinician's daily workflow.</p>
+    <div class="p-hero__facts">
+      <div class="p-hero__fact"><div class="p-hero__fact-label">TYPE</div><div class="p-hero__fact-value">Concept / experiment</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">DOMAIN</div><div class="p-hero__fact-value">Clinical AI assistant</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">TAGLINE</div><div class="p-hero__fact-value">Your clinical companion</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">FOCUS</div><div class="p-hero__fact-value">Insights · Action · Better care</div></div>
+    </div>
+    <div class="p-hero__cover"><img src="assets/img13.jpeg" alt="Chara AI concept cover"></div>
+  </section>
+
+  <section class="p-section p-section--first wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The idea</div>
+      <div class="p-section__body">
+        <h3>What if the dashboard could think alongside you?</h3>
+        <p>Chara AI is an exploration, not a shipped product. It is a chance to imagine what AI-assisted clinical decision support could look like inside an existing remote patient monitoring workflow, rather than as a separate tool clinicians have to context-switch into. The concept connects clinical guidelines, live patient data, wearable devices, care coordination and population-level analytics through a single, platform-agnostic assistant, surfaced right inside the dashboard a clinician already lives in.</p>
+        <p>The name draws from Charaka, the father of Indian medicine, a nod to the wisdom and clarity Chara AI aims to bring: intelligence, compassion and efficiency inside modern healthcare.</p>
+        <figure class="p-img"><img src="assets/img14.jpeg" alt="Chara AI assistant panel over a patient vitals chart"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The problem</div>
+      <div class="p-section__body">
+        <h3>Data everywhere, clarity nowhere</h3>
+        <p>Care providers deal with endless data scattered across EHRs, labs and telemedicine tools. They don't need more data, they need clarity. The goal was to design an AI assistant that unifies fragmented medical systems, predicts risk and supports clinicians through natural, intelligent interaction, one that thinks with them, not in place of them.</p>
+        <p>Primary users: doctors, head nurses and clinical coordinators, all working toward the same three things: a single view of patient health, trustworthy and explainable AI insights, and less time on admin so there's more time for care.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The network</div>
+      <div class="p-section__body">
+        <h3>Six sources, one assistant</h3>
+        <div class="feature-map">
+          <div class="feature-map__item"><h4>Clinical guidelines</h4><p>UpToDate, NICE, and CDC: grounded medical references, not guesses.</p></div>
+          <div class="feature-map__item"><h4>Patient data</h4><p>EHR/EMR, medications, and lab results, already in context.</p></div>
+          <div class="feature-map__item"><h4>Wearables & devices</h4><p>Apple Health, Fitbit, and continuous monitors feeding live signal.</p></div>
+          <div class="feature-map__item"><h4>Care coordination</h4><p>Automated prep, quick literature summaries, referrals, follow-ups.</p></div>
+          <div class="feature-map__item"><h4>Patient engagement</h4><p>Patient-facing app, messaging, and education content.</p></div>
+          <div class="feature-map__item"><h4>Analytics & insight</h4><p>Risk prediction and population health, surfaced proactively.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Design principles</div>
+      <div class="p-section__body">
+        <h3>Trust before intelligence</h3>
+        <p>Designing for healthcare AI is less about showing intelligence and more about building trust. The best AI doesn't overwhelm, it assists quietly.</p>
+        <div class="feature-map">
+          <div class="feature-map__item"><h4>Clean & calm</h4><p>A clinical visual tone that stays quiet under pressure, not another noisy dashboard.</p></div>
+          <div class="feature-map__item"><h4>Context over volume</h4><p>Context-aware insights instead of raw data dumped on the clinician.</p></div>
+          <div class="feature-map__item"><h4>Transparent by design</h4><p>Every recommendation carries the "why" behind it, not a black-box answer.</p></div>
+          <div class="feature-map__item"><h4>Accessible & compliant</h4><p>Built to WCAG AA, with HIPAA & GDPR compliance as a baseline, not an afterthought.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Capabilities</div>
+      <div class="p-section__body">
+        <h3>Where the intelligence shows up</h3>
+        <ul class="p-list">
+          <li><span class="num">→</span><span>Predictive analytics for early disease detection.</span></li>
+          <li><span class="num">→</span><span>Natural language understanding for clinician queries.</span></li>
+          <li><span class="num">→</span><span>Automated data reconciliation for consistent patient records.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-close wrap">
+    <blockquote>Chara AI is a vision of human-centered intelligence in healthcare, a system that simplifies complexity, supports decisions, and lets care providers do what they do best: care.</blockquote>
+    <div class="p-nextrow">
+      <a class="btn btn--ghost" href="#home" data-scroll="top">All work</a>
+      <a class="p-next" href="#orbito">
+        Next: Orbito
+        <span class="p-next__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ PROJECT: ORBITO ============================================================ -->
+<main class="project-view" id="view-orbito">
+  <section class="p-hero wrap">
+    <div class="p-hero__meta-top"><span class="dot-accent" style="background:var(--orbito)"></span>Internal tool · 05</div>
+    <h1>Orbito</h1>
+    <p class="p-hero__sub">A lightweight, agency-first work management system designed to bring clarity to everyday work without adding process overhead.</p>
+    <div class="p-hero__facts">
+      <div class="p-hero__fact"><div class="p-hero__fact-label">ROLE</div><div class="p-hero__fact-value">UX/UI Designer & Working Partner</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">CONTEXT</div><div class="p-hero__fact-value">thinkB Creative Agency</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">USERS</div><div class="p-hero__fact-value">Design & dev teams, management</div></div>
+      <div class="p-hero__fact"><div class="p-hero__fact-label">OUTCOME</div><div class="p-hero__fact-value">Adopted team-wide</div></div>
+    </div>
+    <div class="p-hero__cover"><img src="assets/img15.jpeg" alt="Orbito dark space-themed cover"></div>
+  </section>
+
+  <section class="p-section p-section--first wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Context</div>
+      <div class="p-section__body">
+        <h3>Delivery was happening. Clarity wasn't.</h3>
+        <p>I joined thinkB Creative Agency as Senior UX/UI Designer and working partner, responsible for leading the design and development teams. Work was getting delivered, but task ownership, progress, and effort visibility were scattered across conversations and informal methods. Orbito replaces that fragmented workflow of spreadsheets, chat tools and standalone trackers with one shared system.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Observation</div>
+      <div class="p-section__body">
+        <h3>Not a performance problem, a systems problem</h3>
+        <p>The challenge wasn't commitment or performance, it was the lack of a shared system: tasks needed repeated clarification, context lived in multiple places, progress wasn't visible at a glance, and managers had limited real-time visibility. My intent was simple: bring clarity to everyday work for both the team and management, without adding overhead or disrupting how people already worked.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">The solution</div>
+      <div class="p-section__body">
+        <h3>Orbito</h3>
+        <p>I designed and introduced Orbito, a lightweight, agency-first system tailored to our real workflow.</p>
+        <ul class="p-list">
+          <li><span class="num">→</span><span>Kanban task flow: To Do → In Progress → Review → Done.</span></li>
+          <li><span class="num">→</span><span>Clear ownership, priority, and timelines per task.</span></li>
+          <li><span class="num">→</span><span>Client → Project → Task structure to preserve context.</span></li>
+          <li><span class="num">→</span><span>Integrated worklogs linked to actual tasks.</span></li>
+          <li><span class="num">→</span><span>Centralized comments & attachments as a single source of truth.</span></li>
+        </ul>
+        <figure class="p-img"><img src="assets/img16.jpeg" alt="Orbito kanban board screenshot with tasks across To do, In progress, In review and Done"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-section wrap reveal">
+    <div class="p-section__grid">
+      <div class="p-section__label">Outcome</div>
+      <div class="p-section__body">
+        <h3>Clarity, made the default</h3>
+        <div class="p-tagrow">
+          <span class="p-tag">Clear task ownership</span>
+          <span class="p-tag">Improved team alignment</span>
+          <span class="p-tag">Fewer follow-ups</span>
+          <span class="p-tag">Visibility without micromanagement</span>
+          <span class="p-tag">Natural team-wide adoption</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-close wrap">
+    <blockquote>Orbito is proof that UX thinking applied to operations brings structure and calm, not by enforcing rules but by making clarity the default.</blockquote>
+    <div class="p-nextrow">
+      <a class="btn btn--ghost" href="#home" data-scroll="top">All work</a>
+      <a class="p-next" href="#rpm">
+        Back to the start: Care@Home
+        <span class="p-next__arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M19 12L13 6M19 12L13 18"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // nav scroll state
+  var nav = document.getElementById('siteNav');
+  var progressBar = document.getElementById('progressBar');
+  function onScroll(){
+    nav.classList.toggle('is-scrolled', window.scrollY > 30);
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // mobile nav toggle
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  function closeMenu(){
+    navLinks.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded','false');
+  }
+  navToggle.addEventListener('click', function(){
+    var open = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.addEventListener('click', function(e){
+    if(e.target.closest('a')) closeMenu();
+  });
+  document.addEventListener('click', function(e){
+    if(!navLinks.classList.contains('is-open')) return;
+    if(navLinks.contains(e.target) || navToggle.contains(e.target)) return;
+    closeMenu();
+  });
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  // view routing
+  var projectIds = ['rpm','ptm','nurseready','chara','orbito'];
+  var backLink = document.getElementById('backLink');
+  function showView(){
+    var hash = (location.hash || '#home').replace('#','');
+    var isProject = projectIds.indexOf(hash) !== -1;
+    document.getElementById('view-home').style.display = isProject ? 'none' : '';
+    projectIds.forEach(function(id){
+      var el = document.getElementById('view-'+id);
+      if(el) el.style.display = (hash === id) ? 'block' : 'none';
+    });
+    document.body.classList.toggle('is-project', isProject);
+    backLink.style.display = isProject ? 'flex' : 'none';
+    window.scrollTo(0,0);
+    onScroll();
+  }
+  window.addEventListener('hashchange', showView);
+  showView();
+
+  // scroll reveal
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduceMotion){
+    var revealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(function(el){ revealObserver.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  // smooth scroll-to-section links (data-scroll), including from project views back to home
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[data-scroll]');
+    if(!a) return;
+    e.preventDefault();
+    var target = a.getAttribute('data-scroll');
+    var goingHome = (location.hash && location.hash !== '#home');
+    function scrollToTarget(){
+      if(target === 'top'){
+        window.scrollTo({top:0, behavior: reduceMotion ? 'auto' : 'smooth'});
+        return;
+      }
+      var el = document.getElementById(target);
+      if(el){
+        el.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+      }
+    }
+    if(goingHome){
+      location.hash = '#home';
+      setTimeout(scrollToTarget, 60);
+    } else {
+      scrollToTarget();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
